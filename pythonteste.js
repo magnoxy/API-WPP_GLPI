@@ -26,7 +26,7 @@ function start(client) {
     }
     else if (message.body === '👋' && message.isGroupMsg === false) {
       client
-        .sendText(message.from, 'A michelle é uma safada')
+        .sendText(message.from, 'parente é gnt boa')
         .then((result) => {
           console.log('Result: ', result); //return object success
         })

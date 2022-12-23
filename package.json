@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "glpi-api": "^1.6.1",
+    "requests": "^0.3.0",
+    "venom-bot": "^4.3.7"
+  }
+}

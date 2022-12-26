@@ -5,7 +5,7 @@ const venom = require('venom-bot');
 // Crie uma instância da biblioteca GLPI API
 const Glpi = require('glpi-api');
 const glpi = new Glpi({
-    apiurl     : 'http://10.10.1.6/apirest.php',
+    apiurl     : 'http://10.10.1.6/glpi/apirest.php',
     user_token : '62dbUTlPkIqur3SWmboA4yj2Di0YL445EzQ9R9ud',
     app_token  : 'ZRm5npzySYtB3nDkHxIpGdfviVq6INypKmbwu4PE',
     debug      : true
@@ -23,23 +23,21 @@ venom
 
 function start(client) {
   client.onMessage((message) => {
-    if (message.body === 'oi' && message.isGroupMsg === false) {
-      
-      // Crie um objeto com os dados do chamado
-      const ticketData = {
-        name: title,
-        content,
-        type: 2, // ID do tipo de chamado
-        itilcategories_id: 3, // ID da categoria de chamado
-      };
-      // Abra o chamado usando a biblioteca GLPI API
-      glpi.createItem('Ticket', ticketData)
-        .then((response) => {
-          const ticketId = response.data.id;
-
+    if (message.body === 'Quero abrir um chamado no GLPI' && message.isGroupMsg === false) {
+     //abre chamado no GLPI
+      glpi.initSession()
+        .then(() => {
+          glpi.addItems('Ticket', {
+              name: 'Chamado criado pelo API',
+              content: 'Conteúdo do chamado, foi criado pelo wpp, magno o brabo',
+              itilcategories_id: 1,
+              status: 1,
+              entities_id: 0})              
+        
           // Envie uma mensagem de resposta com o ID do chamado
           client
-            .sendText(message.from, `Seu chamado foi aberto com o ID ${ticketId}`)
+            
+            .sendText(message.from, `Seu chamado foi aberto com sucesso'`)
             .then((result) => {
               console.log('Resultado: ', result); // Retorna um objeto de sucesso
             })

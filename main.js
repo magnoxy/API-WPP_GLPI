@@ -1,6 +1,6 @@
 const GLPIAPI = require('glpi-api');
-
 const venom = require('venom-bot');
+const location = require('./location.js');
 
 // Crie uma instância da biblioteca GLPI API
 const Glpi = require('glpi-api');
@@ -24,30 +24,25 @@ venom
 function start(client) {
   client.onMessage((message) => {
     if (message.body === 'Quero abrir um chamado no GLPI' && message.isGroupMsg === false) {
-     //abre chamado no GLPI
-      glpi.initSession()
-        .then(() => {
-          glpi.addItems('Ticket', {
-              name: 'Chamado criado pelo API',
-              content: 'Conteúdo do chamado, foi criado pelo wpp, magno o brabo',
-              itilcategories_id: 1,
-              status: 1,
-              entities_id: 0})              
-        
-          // Envie uma mensagem de resposta com o ID do chamado
-          client
+      client
+        .sendText(message.from, 'por favor, envie o seu setor')
+        .then((result) => {
+            client.onMessage((message) => {
+            const location = new Location();
+            const locationId = location.getId(message.body.data);
             
-            .sendText(message.from, `Seu chamado foi aberto com sucesso'`)
-            .then((result) => {
-              console.log('Resultado: ', result); // Retorna um objeto de sucesso
-            })
-            .catch((erro) => {
-              console.error('Erro ao enviar: ', erro); // Retorna um objeto de erro
-            });
+            if (locationId) {
+                client.sendText(message.from, 'Por favor, envie o seu problema');
+            }
+            else {
+                client.sendText(message.from, 'Por favor, envie o seu setor novamente');
+            }
+            console.log('seu setor é ', locationId); //retorna um objeto de resultado
+
         })
-        .catch((erro) => {
-          console.error('Erro ao abrir chamado: ', erro);
-        });
+        .catch((erro) =>
+          console.error('Error when sending: ', erro)
+        );
     }
   });
 }
